@@ -17,7 +17,6 @@ import javax.validation.constraints.Size;
 @Data
 public class UserEntity {
     @Id
-    @Size(max = 20)
     private int userId;
 
     @Column(unique=true)

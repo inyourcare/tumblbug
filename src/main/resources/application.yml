@@ -3,7 +3,7 @@ spring:
     active: local
 ---
 server:
-  port: 8099  # Spring boot Server port
+  port: 8080  # Spring boot Server port
 spring:
   profiles: local
   # drive
@@ -17,6 +17,9 @@ spring:
     url: jdbc:h2:file:~/ideaProject/tumblbug/test_db;AUTO_SERVER=TRUE
     username: test
     password: 1234
+
+jwt:
+  secret: securitytest
 
 spring.profiles.include: 'expose-local'
 ---
