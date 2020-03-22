@@ -1,0 +1,22 @@
+spring:
+  profiles:
+    active: local
+---
+server:
+  port: 8099  # Spring boot Server port
+spring:
+  profiles: local
+  # drive
+  h2:
+    console:
+      enabled: true  # H2 웹 콘솔을 사용하겠다는 의미
+      path: /test_db  # 콘솔의 경로
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:file:~/ideaProject/tumblbug/test_db;AUTO_SERVER=TRUE
+    username: test
+    password: 1234
+
+spring.profiles.include: 'expose-local'
+---
