@@ -19,7 +19,7 @@ spring:
     password: 1234
 
 jwt:
-  secret: securitytest
+  secret: javainuse
 
 spring.profiles.include: 'expose-local'
 ---

@@ -3,6 +3,7 @@ package com.kkh.app.controller;
 import com.kkh.app.jwt.JwtTokenUtil;
 import com.kkh.app.request.JwtRequest;
 import com.kkh.app.response.JwtResponse;
+import com.kkh.app.security.CustomUserDetails;
 import com.kkh.app.security.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,15 +24,16 @@ public class JwtAuthenticationController {
     private JwtUserDetailsService userDetailsService;
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-        authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
-        final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(authenticationRequest.getUsername());
+        authenticate(authenticationRequest.getLoginId(), authenticationRequest.getPassword());
+        final CustomUserDetails userDetails = userDetailsService
+                .loadUserByUsername(authenticationRequest.getLoginId());
         final String token = jwtTokenUtil.generateToken(userDetails);
         return ResponseEntity.ok(new JwtResponse(token));
     }
-    private void authenticate(String username, String password) throws Exception {
+    private void authenticate(String loginId, String password) throws Exception {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+            // get user info from loadUserByUsername in userDetailsService
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginId, password));
         } catch (DisabledException e) {
             throw new Exception("USER_DISABLED", e);
         } catch (BadCredentialsException e) {

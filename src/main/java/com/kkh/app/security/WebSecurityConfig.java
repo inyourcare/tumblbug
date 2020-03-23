@@ -20,6 +20,24 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private static final String[] AUTH_WHITELIST = {
+            "/",
+            // H2 Database
+            "/h2/**",
+            "/h2-console/**/**",
+            "/test_db/**/**",
+            "/test_db/**",
+            // For swagger ui
+            "/v2/api-docs",
+            "/webjars/**",
+            "/swagger-resources/**",
+            "/configuration/**",
+            "/swagger-ui.html",
+            // log in
+            "/authenticate"
+    };
+
     @Autowired
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     @Autowired
@@ -44,16 +62,30 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
+
+        // For h2 console
+        httpSecurity.headers().frameOptions().sameOrigin();
         // We don't need CSRF for this example
         httpSecurity.csrf().disable()
                 // dont authenticate this particular request
-                .authorizeRequests().antMatchers("/authenticate").permitAll().
+                .authorizeRequests()
+                    .antMatchers(AUTH_WHITELIST).permitAll()
                 // all other requests need to be authenticated
-                        anyRequest().authenticated().and().
+                    .anyRequest().authenticated().and()
+                // log in out
+                    .formLogin()
+                    .loginPage("/login")
+                    .loginProcessingUrl("/auth/login")
+                    .usernameParameter("username")
+                    .passwordParameter("password")
+                    .permitAll()
+                    .and()
+                    .logout()
+                    .permitAll().and()
                 // make sure we use stateless session; session won't be used to
                 // store user's state.
-                        exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                    .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         // Add a filter to validate the tokens with every request
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
