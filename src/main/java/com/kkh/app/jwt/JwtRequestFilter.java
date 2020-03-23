@@ -1,5 +1,6 @@
 package com.kkh.app.jwt;
 
+import com.kkh.app.security.CustomUserDetails;
 import com.kkh.app.security.JwtUserDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
         // Once we get the token validate it.
         if (loginId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(loginId);
+            CustomUserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(loginId);
             // if token is valid configure Spring Security to manually set
             // authentication
             if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
