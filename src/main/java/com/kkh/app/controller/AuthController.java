@@ -2,6 +2,7 @@ package com.kkh.app.controller;
 
 import com.kkh.app.request.SignUpRequest;
 import com.kkh.app.service.AuthService;
+import com.kkh.app.util.AuthUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,14 @@ public class AuthController {
     @ApiOperation(value = "signUp", response = Map.class)
     @RequestMapping(path = "/signUp", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity signUp(@Valid @RequestBody SignUpRequest signUpRequest) throws Exception {
+        validate(signUpRequest);
         authService.signUp(signUpRequest);
         return ResponseEntity.ok().build();
+    }
+
+    private void validate(SignUpRequest signUpRequest) throws Exception {
+        AuthUtil.isRegexName(signUpRequest.getName());
+        AuthUtil.isRegexEmail(signUpRequest.getEmail());
+        AuthUtil.isRegexPhoneNo(signUpRequest.getPhoneNo());
     }
 }

@@ -29,6 +29,16 @@ public class UserEntity {
     @Size(max = 80)
     private String password;
 
+    @Size(max = 80)
+    private String name;
+
+    @Size(max = 80)
+    @Column(unique=true)
+    private String email;
+
+    @Size(max = 11)
+    private String phoneNo;
+
     @Builder
     public UserEntity(long userId, @NotBlank @Size(max = 80) String loginId, @NotBlank @Size(max = 80) String password) {
         this.userId = userId;

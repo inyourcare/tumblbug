@@ -18,10 +18,14 @@ public class AuthService {
     public void signUp(SignUpRequest signUpRequest) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String userId = String.valueOf(Thread.currentThread().getId()) + new Date().getTime();
-        userRepository.save(UserEntity.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .userId(Long.parseLong(userId))
                 .loginId(signUpRequest.getLoginId())
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
-                .build());
+                .build();
+        userEntity.setEmail(signUpRequest.getEmail());
+        userEntity.setPhoneNo(signUpRequest.getPhoneNo());
+        userEntity.setName(signUpRequest.getName());
+        userRepository.save(userEntity);
     }
 }
