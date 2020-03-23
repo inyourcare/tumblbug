@@ -1,6 +1,7 @@
 package com.kkh.app.jpa.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +18,7 @@ import javax.validation.constraints.Size;
 @Data
 public class UserEntity {
     @Id
-    private int userId;
+    private long userId;
 
     @Column(unique=true)
     @NotBlank
@@ -27,4 +28,11 @@ public class UserEntity {
     @NotBlank
     @Size(max = 80)
     private String password;
+
+    @Builder
+    public UserEntity(long userId, @NotBlank @Size(max = 80) String loginId, @NotBlank @Size(max = 80) String password) {
+        this.userId = userId;
+        this.loginId = loginId;
+        this.password = password;
+    }
 }
