@@ -12,9 +12,11 @@ import com.kkh.app.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectService {
@@ -24,10 +26,11 @@ public class ProjectService {
     ProjectRepository projectRepository;
 
 
+    @Transactional(rollbackFor = Exception.class)
     public void register(CustomUserDetails user, ProjectRegisterRequest request) throws Exception {
         UserEntity userEntity = userRepository.findById(Long.parseLong(user.getUserId())).orElseThrow(()->new Exception(UserExceptionMessage.USER_NOT_FOUND.getMessage()));
         Date now = new Date();
-        projectRepository.save(ProjectEntity.builder()
+        ProjectEntity projectEntity = ProjectEntity.builder()
                 .creator(userEntity)
                 .modifier(userEntity)
                 .donationAccumulated(0)
@@ -39,10 +42,12 @@ public class ProjectService {
                 .projectEndTimestamp(request.getProjectEndTime())
                 .registeredTimestamp(now)
                 .updatedTimestamp(now)
-                .state(ProjectCode.STATE_READY.getCode())
-                .build());
+                .build();
+        projectEntity.setState();
+        projectRepository.save(projectEntity);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public void update(CustomUserDetails user, ProjectUpdateRequest request) throws Exception {
         UserEntity userEntity = userRepository.findById(Long.parseLong(user.getUserId())).orElseThrow(()->new Exception(UserExceptionMessage.USER_NOT_FOUND.getMessage()));
         Date now = new Date();
@@ -57,17 +62,23 @@ public class ProjectService {
         projectRepository.save(projectEntity);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public void delete(CustomUserDetails user, ProjectDeleteRequest request) throws Exception {
         if(!projectRepository.existsById(request.getProjectUUID()))
             throw new Exception(ProjectExceptionMessage.PROJECT_NOT_FOUND.getMessage());
         projectRepository.deleteById(request.getProjectUUID());
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public List<ProjectEntity> getList(CustomUserDetails user, ProjectGetListRequest request) {
-        return projectRepository.findAll(Sort.by(Sort.Direction.valueOf(request.getSortDirection()) , request.getSort()));
+        return projectRepository.saveAll(projectRepository.findAll(Sort.by(Sort.Direction.valueOf(request.getSortDirection()) , request.getSort())).stream().peek(ProjectEntity::setState).collect(Collectors.toList()));
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public ProjectEntity getDetail(CustomUserDetails user, ProjectGetDetailRequest request) throws Exception {
-        return projectRepository.findById(request.getProjectUUID()).orElseThrow(()-> new Exception(ProjectExceptionMessage.PROJECT_NOT_FOUND.getMessage()));
+        ProjectEntity projectEntity = projectRepository.findById(request.getProjectUUID()).orElseThrow(()-> new Exception(ProjectExceptionMessage.PROJECT_NOT_FOUND.getMessage()));
+        projectEntity.setState();
+        projectRepository.save(projectEntity);
+        return projectEntity;
     }
 }

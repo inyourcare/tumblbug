@@ -1,5 +1,6 @@
 package com.kkh.app.jpa.entity;
 
+import com.kkh.app.code.ProjectCode;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -59,7 +60,7 @@ public class ProjectEntity {
     private Date updatedTimestamp;
 
     @Builder
-    public ProjectEntity(UUID projectUUID, @Size(max = 200) String projectName, @Size(max = 1200) String projectDescription, UserEntity creator, UserEntity modifier, long donationGoal, int donationCount, long donationAccumulated, String state, Date projectStartTimestamp, Date projectEndTimestamp, Date registeredTimestamp, Date updatedTimestamp) {
+    public ProjectEntity(UUID projectUUID, @Size(max = 200) String projectName, @Size(max = 1200) String projectDescription, UserEntity creator, UserEntity modifier, long donationGoal, int donationCount, long donationAccumulated, Date projectStartTimestamp, Date projectEndTimestamp, Date registeredTimestamp, Date updatedTimestamp) {
         this.projectUUID = projectUUID;
         this.projectName = projectName;
         this.projectDescription = projectDescription;
@@ -68,10 +69,21 @@ public class ProjectEntity {
         this.donationGoal = donationGoal;
         this.donationCount = donationCount;
         this.donationAccumulated = donationAccumulated;
-        this.state = state;
         this.projectStartTimestamp = projectStartTimestamp;
         this.projectEndTimestamp = projectEndTimestamp;
         this.registeredTimestamp = registeredTimestamp;
         this.updatedTimestamp = updatedTimestamp;
+    }
+
+    public void setState(){
+        Date now = new Date();
+        if (now.getTime() < this.projectStartTimestamp.getTime())
+            this.state = ProjectCode.STATE_READY.getCode();
+        else if (now.getTime() < this.projectEndTimestamp.getTime())
+            this.state = ProjectCode.STATE_STANDING.getCode();
+        else if (this.donationAccumulated >= this.donationGoal)
+            this.state = ProjectCode.STATE_DONE.getCode();
+        else
+            this.state = ProjectCode.STATE_FAIL.getCode();
     }
 }
