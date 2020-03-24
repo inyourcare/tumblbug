@@ -7,10 +7,7 @@ import com.kkh.app.jpa.entity.ProjectEntity;
 import com.kkh.app.jpa.entity.UserEntity;
 import com.kkh.app.jpa.repo.ProjectRepository;
 import com.kkh.app.jpa.repo.UserRepository;
-import com.kkh.app.request.project.ProjectDeleteRequest;
-import com.kkh.app.request.project.ProjectGetListRequest;
-import com.kkh.app.request.project.ProjectRegisterRequest;
-import com.kkh.app.request.project.ProjectUpdateRequest;
+import com.kkh.app.request.project.*;
 import com.kkh.app.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -51,6 +48,7 @@ public class ProjectService {
         Date now = new Date();
         ProjectEntity projectEntity = projectRepository.findById(request.getProjectUUID()).orElseThrow(()->new Exception(ProjectExceptionMessage.PROJECT_NOT_FOUND.getMessage()));
         projectEntity.setModifier(userEntity);
+        projectEntity.setUpdatedTimestamp(now);
         projectEntity.setProjectName(request.getProjectName());
         projectEntity.setProjectDescription(request.getProjectDescription());
         projectEntity.setProjectStartTimestamp(request.getProjectStartTime());
@@ -67,5 +65,9 @@ public class ProjectService {
 
     public List<ProjectEntity> getList(CustomUserDetails user, ProjectGetListRequest request) {
         return projectRepository.findAll(Sort.by(Sort.Direction.valueOf(request.getSortDirection()) , request.getSort()));
+    }
+
+    public ProjectEntity getDetail(CustomUserDetails user, ProjectGetDetailRequest request) throws Exception {
+        return projectRepository.findById(request.getProjectUUID()).orElseThrow(()-> new Exception(ProjectExceptionMessage.PROJECT_NOT_FOUND.getMessage()));
     }
 }

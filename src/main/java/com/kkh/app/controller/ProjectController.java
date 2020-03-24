@@ -1,10 +1,8 @@
 package com.kkh.app.controller;
 
 import com.kkh.app.jpa.entity.ProjectEntity;
-import com.kkh.app.request.project.ProjectDeleteRequest;
-import com.kkh.app.request.project.ProjectGetListRequest;
-import com.kkh.app.request.project.ProjectRegisterRequest;
-import com.kkh.app.request.project.ProjectUpdateRequest;
+import com.kkh.app.request.project.*;
+import com.kkh.app.response.project.ProjectGetDetailResponse;
 import com.kkh.app.response.project.ProjectGetListResponse;
 import com.kkh.app.security.CurrentUser;
 import com.kkh.app.security.CustomUserDetails;
@@ -46,5 +44,10 @@ public class ProjectController {
     public ResponseEntity getList(@CurrentUser CustomUserDetails user , @RequestBody ProjectGetListRequest request) throws Exception {
         List<ProjectEntity> resultList = projectService.getList(user , request);
         return ResponseEntity.ok().body(ProjectGetListResponse.builder().projectEntityList(resultList).build());
+    }
+    @RequestMapping(value = "/getDetail", method = RequestMethod.POST)
+    public ResponseEntity getDetail(@CurrentUser CustomUserDetails user , @RequestBody ProjectGetDetailRequest request) throws Exception {
+        ProjectEntity projectEntity = projectService.getDetail(user , request);
+        return ResponseEntity.ok().body(ProjectGetDetailResponse.builder().projectEntity(projectEntity).build());
     }
 }
