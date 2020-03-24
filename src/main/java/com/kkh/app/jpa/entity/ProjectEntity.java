@@ -75,7 +75,7 @@ public class ProjectEntity {
         this.updatedTimestamp = updatedTimestamp;
     }
 
-    public void setState(){
+    public void setState() {
         Date now = new Date();
         if (now.getTime() < this.projectStartTimestamp.getTime())
             this.state = ProjectCode.STATE_READY.getCode();

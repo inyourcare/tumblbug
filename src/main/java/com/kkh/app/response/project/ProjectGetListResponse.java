@@ -13,12 +13,12 @@ public class ProjectGetListResponse {
     List<Project> projectList;
 
     @Builder
-    ProjectGetListResponse(List<ProjectEntity> projectEntityList){
+    ProjectGetListResponse(List<ProjectEntity> projectEntityList) {
         projectList = projectEntityList.stream().map(Project::new).collect(Collectors.toList());
     }
 
     @Data
-    private class Project{
+    private class Project {
 
         String projectName;
         String creator;
@@ -29,7 +29,7 @@ public class ProjectGetListResponse {
         Date projectStartTimestamp;
         Date projectEndTimestamp;
 
-        Project(ProjectEntity projectEntity){
+        Project(ProjectEntity projectEntity) {
             this.projectName = projectEntity.getProjectName();
             this.creator = projectEntity.getCreator().getName();
             this.donationGoal = projectEntity.getDonationGoal();

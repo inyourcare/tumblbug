@@ -14,8 +14,8 @@ public class UserActionService {
     ProjectRepository projectRepository;
 
     public void supportProject(CustomUserDetails user, UserActionRequest request) throws Exception {
-        ProjectEntity projectEntity = projectRepository.findById(request.getProjectUUID()).orElseThrow(()->new Exception(ProjectExceptionMessage.PROJECT_NOT_FOUND.getMessage()));
-        projectEntity.setDonationCount(projectEntity.getDonationCount()+1);
+        ProjectEntity projectEntity = projectRepository.findById(request.getProjectUUID()).orElseThrow(() -> new Exception(ProjectExceptionMessage.PROJECT_NOT_FOUND.getMessage()));
+        projectEntity.setDonationCount(projectEntity.getDonationCount() + 1);
         projectEntity.setDonationAccumulated(projectEntity.getDonationAccumulated() + request.getDonationMoney());
         projectRepository.save(projectEntity);
     }

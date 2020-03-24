@@ -20,7 +20,7 @@ public class UserEntity {
     @Id
     private long userId;
 
-    @Column(unique=true)
+    @Column(unique = true)
     @NotBlank
     @Size(max = 80)
     private String loginId;
@@ -33,7 +33,7 @@ public class UserEntity {
     private String name;
 
     @Size(max = 80)
-    @Column(unique=true)
+    @Column(unique = true)
     private String email;
 
     @Size(max = 11)

@@ -15,7 +15,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public CustomUserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByLoginId(loginId).orElseThrow(()->new UsernameNotFoundException("loginId not found"));
+        UserEntity user = userRepository.findByLoginId(loginId).orElseThrow(() -> new UsernameNotFoundException("loginId not found"));
         return CustomUserDetails.builder().userEntity(user).build();
     }
 }

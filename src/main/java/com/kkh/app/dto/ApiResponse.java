@@ -10,7 +10,7 @@ public class ApiResponse {
     private Object result;
 
     @Builder
-    public ApiResponse(Boolean success, String message,Object result) {
+    public ApiResponse(Boolean success, String message, Object result) {
         this.success = success;
         this.message = message;
         this.result = result;

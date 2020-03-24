@@ -23,7 +23,7 @@ public class ProjectGetDetailResponse {
     Date updatedTimestamp;
 
     @Builder
-    ProjectGetDetailResponse(ProjectEntity projectEntity){
+    ProjectGetDetailResponse(ProjectEntity projectEntity) {
         this.projectEndTimestamp = projectEntity.getProjectEndTimestamp();
         this.projectStartTimestamp = projectEntity.getProjectStartTimestamp();
         this.state = projectEntity.getState();

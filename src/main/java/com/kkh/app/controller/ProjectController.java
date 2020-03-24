@@ -27,47 +27,51 @@ public class ProjectController {
     ProjectService projectService;
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity register(@CurrentUser CustomUserDetails user , @RequestBody ProjectRegisterRequest request) throws Exception {
+    public ResponseEntity register(@CurrentUser CustomUserDetails user, @RequestBody ProjectRegisterRequest request) throws Exception {
         try {
-            projectService.register(user , request);
+            projectService.register(user, request);
         } catch (Exception e) {
             return ResponseEntity.ok().body(ApiResponse.builder().success(false).message(e.getMessage()).build());
         }
         return ResponseEntity.ok().body(ApiResponse.builder().success(true).build());
     }
+
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public ResponseEntity update(@CurrentUser CustomUserDetails user , @RequestBody ProjectUpdateRequest request) throws Exception {
+    public ResponseEntity update(@CurrentUser CustomUserDetails user, @RequestBody ProjectUpdateRequest request) throws Exception {
         try {
-            projectService.update(user , request);
+            projectService.update(user, request);
         } catch (Exception e) {
             return ResponseEntity.ok().body(ApiResponse.builder().success(false).message(e.getMessage()).build());
         }
         return ResponseEntity.ok().body(ApiResponse.builder().success(true).build());
     }
+
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-    public ResponseEntity delete(@CurrentUser CustomUserDetails user , @RequestBody ProjectDeleteRequest request) throws Exception {
+    public ResponseEntity delete(@CurrentUser CustomUserDetails user, @RequestBody ProjectDeleteRequest request) throws Exception {
         try {
-            projectService.delete(user , request);
+            projectService.delete(user, request);
         } catch (Exception e) {
             return ResponseEntity.ok().body(ApiResponse.builder().success(false).message(e.getMessage()).build());
         }
         return ResponseEntity.ok().body(ApiResponse.builder().success(true).build());
     }
+
     @RequestMapping(value = "/getList", method = RequestMethod.POST)
-    public ResponseEntity getList(@CurrentUser CustomUserDetails user , @RequestBody ProjectGetListRequest request) throws Exception {
+    public ResponseEntity getList(@CurrentUser CustomUserDetails user, @RequestBody ProjectGetListRequest request) throws Exception {
         List<ProjectEntity> resultList = null;
         try {
-            resultList = projectService.getList(user , request);
+            resultList = projectService.getList(user, request);
         } catch (Exception e) {
             return ResponseEntity.ok().body(ApiResponse.builder().success(false).message(e.getMessage()).build());
         }
         return ResponseEntity.ok().body(ApiResponse.builder().success(true).result(ProjectGetListResponse.builder().projectEntityList(resultList).build()).build());
     }
+
     @RequestMapping(value = "/getDetail", method = RequestMethod.POST)
-    public ResponseEntity getDetail(@CurrentUser CustomUserDetails user , @RequestBody ProjectGetDetailRequest request) throws Exception {
+    public ResponseEntity getDetail(@CurrentUser CustomUserDetails user, @RequestBody ProjectGetDetailRequest request) throws Exception {
         ProjectEntity projectEntity = null;
         try {
-            projectEntity = projectService.getDetail(user , request);
+            projectEntity = projectService.getDetail(user, request);
         } catch (Exception e) {
             return ResponseEntity.ok().body(ApiResponse.builder().success(false).message(e.getMessage()).build());
         }
