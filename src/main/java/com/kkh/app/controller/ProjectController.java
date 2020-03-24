@@ -5,6 +5,7 @@ import com.kkh.app.request.project.ProjectDeleteRequest;
 import com.kkh.app.request.project.ProjectGetListRequest;
 import com.kkh.app.request.project.ProjectRegisterRequest;
 import com.kkh.app.request.project.ProjectUpdateRequest;
+import com.kkh.app.response.project.ProjectGetListResponse;
 import com.kkh.app.security.CurrentUser;
 import com.kkh.app.security.CustomUserDetails;
 import com.kkh.app.service.ProjectService;
@@ -44,6 +45,6 @@ public class ProjectController {
     @RequestMapping(value = "/getList", method = RequestMethod.POST)
     public ResponseEntity getList(@CurrentUser CustomUserDetails user , @RequestBody ProjectGetListRequest request) throws Exception {
         List<ProjectEntity> resultList = projectService.getList(user , request);
-        return ResponseEntity.ok().body(resultList);
+        return ResponseEntity.ok().body(ProjectGetListResponse.builder().projectEntityList(resultList).build());
     }
 }
