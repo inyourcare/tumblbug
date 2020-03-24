@@ -23,12 +23,12 @@ public class ProjectController {
     ProjectService projectService;
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity register(@CurrentUser CustomUserDetails user , @RequestBody ProjectRegisterRequest request) {
+    public ResponseEntity register(@CurrentUser CustomUserDetails user , @RequestBody ProjectRegisterRequest request) throws Exception {
         projectService.register(user , request);
         return ResponseEntity.ok().build();
     }
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public ResponseEntity update(@CurrentUser CustomUserDetails user , @RequestBody ProjectUpdateRequest request) {
+    public ResponseEntity update(@CurrentUser CustomUserDetails user , @RequestBody ProjectUpdateRequest request) throws Exception {
         projectService.update(user , request);
         return ResponseEntity.ok().build();
     }

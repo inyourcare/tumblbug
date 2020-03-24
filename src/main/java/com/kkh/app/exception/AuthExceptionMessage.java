@@ -3,7 +3,7 @@ package com.kkh.app.exception;
 import lombok.Getter;
 
 @Getter
-public enum  AuthExceptionCode {
+public enum AuthExceptionMessage {
 
     PHONE_NO_REGEX_ERROR("Phone number regex error"),
     EMAIL_REGEX_ERROR("email regex error"),
@@ -11,7 +11,7 @@ public enum  AuthExceptionCode {
             ;
     final private String message;
 
-    AuthExceptionCode(String message) {
+    AuthExceptionMessage(String message) {
         this.message = message;
     }
 }
