@@ -8,13 +8,16 @@ import com.kkh.app.jpa.entity.UserEntity;
 import com.kkh.app.jpa.repo.ProjectRepository;
 import com.kkh.app.jpa.repo.UserRepository;
 import com.kkh.app.request.project.ProjectDeleteRequest;
+import com.kkh.app.request.project.ProjectGetListRequest;
 import com.kkh.app.request.project.ProjectRegisterRequest;
 import com.kkh.app.request.project.ProjectUpdateRequest;
 import com.kkh.app.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class ProjectService {
@@ -56,7 +59,13 @@ public class ProjectService {
         projectRepository.save(projectEntity);
     }
 
-    public void delete(CustomUserDetails user, ProjectDeleteRequest request) {
+    public void delete(CustomUserDetails user, ProjectDeleteRequest request) throws Exception {
+        if(!projectRepository.existsById(request.getProjectUUID()))
+            throw new Exception(ProjectExceptionMessage.PROJECT_NOT_FOUND.getMessage());
         projectRepository.deleteById(request.getProjectUUID());
+    }
+
+    public List<ProjectEntity> getList(CustomUserDetails user, ProjectGetListRequest request) {
+        return projectRepository.findAll(Sort.by(Sort.Direction.valueOf(request.getSortDirection()) , request.getSort()));
     }
 }

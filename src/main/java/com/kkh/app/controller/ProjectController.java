@@ -1,6 +1,8 @@
 package com.kkh.app.controller;
 
+import com.kkh.app.jpa.entity.ProjectEntity;
 import com.kkh.app.request.project.ProjectDeleteRequest;
+import com.kkh.app.request.project.ProjectGetListRequest;
 import com.kkh.app.request.project.ProjectRegisterRequest;
 import com.kkh.app.request.project.ProjectUpdateRequest;
 import com.kkh.app.security.CurrentUser;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @Api(value = "project api", consumes = "application/json")
@@ -33,8 +37,13 @@ public class ProjectController {
         return ResponseEntity.ok().build();
     }
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-    public ResponseEntity delete(@CurrentUser CustomUserDetails user , @RequestBody ProjectDeleteRequest request) {
+    public ResponseEntity delete(@CurrentUser CustomUserDetails user , @RequestBody ProjectDeleteRequest request) throws Exception {
         projectService.delete(user , request);
         return ResponseEntity.ok().build();
+    }
+    @RequestMapping(value = "/getList", method = RequestMethod.POST)
+    public ResponseEntity getList(@CurrentUser CustomUserDetails user , @RequestBody ProjectGetListRequest request) throws Exception {
+        List<ProjectEntity> resultList = projectService.getList(user , request);
+        return ResponseEntity.ok().body(resultList);
     }
 }
