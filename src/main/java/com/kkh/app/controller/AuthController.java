@@ -1,5 +1,6 @@
 package com.kkh.app.controller;
 
+import com.kkh.app.dto.ApiResponse;
 import com.kkh.app.jwt.JwtTokenUtil;
 import com.kkh.app.request.JwtRequest;
 import com.kkh.app.request.SignUpRequest;
@@ -42,8 +43,12 @@ public class AuthController {
     @RequestMapping(path = "/signUp", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity signUp(@Valid @RequestBody SignUpRequest signUpRequest) throws Exception {
         validate(signUpRequest);
-        authService.signUp(signUpRequest);
-        return ResponseEntity.ok().build();
+        try {
+            authService.signUp(signUpRequest);
+        } catch (Exception e) {
+            return ResponseEntity.ok().body(ApiResponse.builder().success(false).message(e.getMessage()).build());
+        }
+        return ResponseEntity.ok().body(ApiResponse.builder().success(true).build());
     }
 
     private void validate(SignUpRequest signUpRequest) throws Exception {
@@ -54,11 +59,16 @@ public class AuthController {
 
     @RequestMapping(value = "/signIn", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-        authenticate(authenticationRequest.getLoginId(), authenticationRequest.getPassword());
-        final CustomUserDetails userDetails = userDetailsService
-                .loadUserByUsername(authenticationRequest.getLoginId());
-        final String token = jwtTokenUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new JwtResponse(token));
+        final String token;
+        try {
+            authenticate(authenticationRequest.getLoginId(), authenticationRequest.getPassword());
+            final CustomUserDetails userDetails = userDetailsService
+                    .loadUserByUsername(authenticationRequest.getLoginId());
+            token = jwtTokenUtil.generateToken(userDetails);
+        } catch (Exception e) {
+            return ResponseEntity.ok().body(ApiResponse.builder().success(false).message(e.getMessage()).build());
+        }
+        return ResponseEntity.ok().body(ApiResponse.builder().success(true).result(new JwtResponse(token)).build());
     }
 
     private void authenticate(String loginId, String password) throws Exception {

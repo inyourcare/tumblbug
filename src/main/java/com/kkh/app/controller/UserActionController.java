@@ -1,5 +1,6 @@
 package com.kkh.app.controller;
 
+import com.kkh.app.dto.ApiResponse;
 import com.kkh.app.request.project.ProjectRegisterRequest;
 import com.kkh.app.request.useraction.UserActionRequest;
 import com.kkh.app.security.CurrentUser;
@@ -22,7 +23,11 @@ public class UserActionController {
 
     @RequestMapping(value = "/supportProject", method = RequestMethod.POST)
     public ResponseEntity supportProject(@CurrentUser CustomUserDetails user , @RequestBody UserActionRequest request) throws Exception {
-        userActionService.supportProject(user , request);
-        return ResponseEntity.ok().build();
+        try {
+            userActionService.supportProject(user , request);
+        } catch (Exception e) {
+            return ResponseEntity.ok().body(ApiResponse.builder().success(false).message(e.getMessage()).build());
+        }
+        return ResponseEntity.ok().body(ApiResponse.builder().success(true).build());
     }
 }
